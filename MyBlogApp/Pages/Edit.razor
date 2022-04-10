@@ -1,0 +1,74 @@
+﻿@page "/edit"
+
+<div>
+    <div class="d-flex align-center justify-space-around">
+        <MCol Cols="12" Sm="3">
+         <MTextField @bind-Value="_Title" Label="文章标题" Clearable></MTextField>
+        </MCol>
+        <MCol Cols="12" Sm="3">
+            <MTextField @bind-Value="_classify" Label="分类" Clearable></MTextField>
+        </MCol>
+        <MCol Cols="12" Sm="3">
+            <MTextField @bind-Value="_label" Label="标签#标签#标签" Clearable></MTextField>
+        </MCol>
+        <MButton Depressed Color="primary" @onclick="GetHtmlAsync">获取html</MButton>
+         <MButton Depressed Color="primary" Href="/">取消</MButton>
+    </div>
+    
+    <MMarkdown Options="_options" ContentStyle="height:500px" @ref="@_editor" @bind-Value="_editorContent" Placeholder="请输入内容"></MMarkdown>
+
+    <MAlert Border="Borders.Top"
+            ColoredBorder
+            Type="AlertTypes.Info"
+            Elevation="2"
+            Class="overflow-auto mt-10">
+        @_viewContent
+    </MAlert>
+</div>
+
+@code{
+    private MMarkdown _editor;
+    private string _editorContent;
+    private string _Title;
+    private string _classify;
+    private string _label;
+    private string _viewContent;
+
+    private Dictionary<string, object> _options = new Dictionary<string, object>();
+
+    protected override void OnInitialized()
+    {
+        _options.Add("counter", new
+        {
+            enable = true,
+            type = "type"
+        });
+        //上传图片
+        _options.Add("upload", new
+        {
+            url = "https://localhost:7282/edit",
+            max = 2 * 1024 * 1024,
+            accept = "image/*",
+            multiple = true,
+        });
+        _options.Add("mode","sv");
+        _options.Add("height",540);
+        _options.Add("minHeight",300);
+        _options.Add("width","100%");
+        base.OnInitialized();
+    }
+    //BUtton的点击事件
+    public async Task GetHtmlAsync()
+    {
+        _viewContent = await this._editor.GetHtmlAsync();
+    }
+    ////图片上传路径
+    //private MMarkdown _upload = new MMarkdown
+    //{
+    //    action = "e://visualprojects//myblogsolution//myblogapp//uploadimage//",
+    //    tokenname = "authorization",
+    //    name = "file",
+    //    accept = "image/png,image/gif,image/jpeg,image/bmp,image/x-icon",
+    //    pathkey = "path"
+    //};
+}
