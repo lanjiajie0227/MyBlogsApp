@@ -1,12 +1,24 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using MyBlogApp.Data;
+using MyBlogApp.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddMasaBlazor();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+//
+builder.Services.AddScoped<DbContext, myblogsContext>();
+builder.Services.AddDbContext<myblogsContext>(options=>options.UseMySql("name=ConnectionString:MySqlConnection",Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.28-mysql"))
+.EnableSensitiveDataLogging(false)
+.EnableDetailedErrors());
+
 builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
